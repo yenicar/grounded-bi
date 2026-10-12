@@ -7,6 +7,7 @@ import re
 from typing import Any
 
 from .config import AppConfig
+from .grounding_check import assess_answer, expected_facts_found, expected_source_hit
 from .providers import RAGProvider
 from .retrieval import ask_question
 from .utils import read_json, write_json
@@ -16,22 +17,84 @@ def _default_eval_prompts_path(config: AppConfig) -> Path:
     return config.paths.eval_dir / "default_prompts.json"
 
 
-def _score_factual_grounding(result: dict[str, Any]) -> int:
-    answer = result["answer"].lower()
-    if not result["citations"]:
-        return 1
-    if "insufficient" in answer or "could not find enough grounded evidence" in answer:
-        return 2
-    return 5 if result["citations"] else 2
+SCORING_VERSION = 2
+SCORING_NOTES = (
+    "factual_grounding and citation_quality check that the cited chunks support the answer "
+    "claim by claim (grounding_check.py), not that citations exist. Version 1 scored grounding 5 "
+    "for any answer with citations and citation quality by the number of distinct documents."
+)
 
 
-def _score_citation_quality(result: dict[str, Any]) -> int:
-    unique_docs = {citation.split(" p.", 1)[0].split(" pp.", 1)[0] for citation in result["citations"]}
-    if not unique_docs:
+def _cited_chunks(result: dict[str, Any]) -> list[dict[str, Any]]:
+    """The chunks the answer cites, with their text: the contexts the model was given."""
+    return list(result.get("retrieval_debug", {}).get("selected", []) or [])
+
+
+def _band(value: float, cutoffs: tuple[float, float, float, float]) -> int:
+    """5 for value >= cutoffs[0], 4 for >= cutoffs[1], 3, 2, else 1."""
+    for score, cutoff in zip((5, 4, 3, 2), cutoffs):
+        if value >= cutoff:
+            return score
+    return 1
+
+
+def _score_factual_grounding(grounding: dict[str, Any], answerable: bool | None) -> int:
+    """1-5 from the share of the answer's claims that a cited chunk supports.
+
+    A refusal scores 5 on a question the corpus does not cover, 1 on one it does, and 2 when the
+    prompt does not say. An answer to a question marked not covered scores 1.
+    """
+    if grounding["refusal"]:
+        if answerable is False:
+            return 5
+        return 1 if answerable is True else 2
+    if answerable is False:
         return 1
-    if len(unique_docs) == 1:
-        return 3
-    return 5
+    rate = grounding["claim_support_rate"]
+    if rate is None:
+        return 1
+    return _band(rate, (0.95, 0.8, 0.6, 0.4))
+
+
+def _score_citation_quality(grounding: dict[str, Any], source_hit: bool | None) -> int | None:
+    """1-5 from the share of cited chunks that support at least one claim; None for a refusal.
+
+    Capped at 2 when the prompt names an expected source and no cited chunk comes from it.
+    """
+    if grounding["refusal"]:
+        return None
+    precision = grounding["citation_precision"]
+    if not precision:
+        return 1
+    score = _band(precision, (0.75, 0.5, 0.25, 0.0001))
+    if source_hit is False:
+        score = min(score, 2)
+    return score
+
+
+def score_result(prompt: dict[str, Any], result: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Deterministic scores for one answer, and the claim-level grounding detail behind them."""
+    cited = _cited_chunks(result)
+    grounding = assess_answer(result.get("answer", ""), cited)
+    answerable = prompt.get("answerable")
+    source_hit = expected_source_hit(cited, prompt.get("expected_doc"), prompt.get("expected_pages"))
+    facts = expected_facts_found(result.get("answer", ""), prompt.get("expected_facts"))
+    scores: dict[str, Any] = {
+        "factual_grounding": _score_factual_grounding(grounding, answerable),
+        "citation_quality": _score_citation_quality(grounding, source_hit),
+        "claim_support_rate": grounding["claim_support_rate"],
+        "citation_precision": None if grounding["refusal"] else grounding["citation_precision"],
+        "expected_source_hit": None if source_hit is None else float(source_hit),
+        "expected_facts_found": facts,
+        "refusal_correct": None if answerable is None else float(grounding["refusal"] == (answerable is False)),
+    }
+    return scores, grounding
+
+
+def _average(results: list[dict[str, Any]], key: str) -> float | None:
+    values = [item["scores"].get(key) for item in results]
+    values = [value for value in values if value is not None]
+    return round(sum(values) / len(values), 3) if values else None
 
 
 def _score_latency(result: dict[str, Any]) -> int:
@@ -65,8 +128,8 @@ def _score_faithfulness_llm(
     context_texts: list[str],
 ) -> dict[str, Any]:
     context_block = "\n\n".join(
-        f"[{index + 1}] {text[:800]}"
-        for index, text in enumerate(context_texts[:4])
+        f"[{index + 1}] {text[:1500]}"
+        for index, text in enumerate(context_texts[:8])
     )
     prompt = f"""You are evaluating a RAG system answer for faithfulness.
 
@@ -98,7 +161,23 @@ Respond with ONLY valid JSON in this exact format:
                 return json_lib.loads(match.group(0))
             raise
     except Exception:
-        return {"faithfulness": 0, "relevance": 0, "reasoning": "judge_failed"}
+        # None, not 0, so a failed judge call is left out of the averages instead of dragging them down
+        return {"faithfulness": None, "relevance": None, "reasoning": "judge_failed"}
+
+
+AVERAGED_SCORES = (
+    "factual_grounding",
+    "citation_quality",
+    "claim_support_rate",
+    "citation_precision",
+    "expected_source_hit",
+    "expected_facts_found",
+    "refusal_correct",
+    "latency",
+    "cost_per_query",
+    "faithfulness_llm",
+    "relevance_llm",
+)
 
 
 def run_evaluation(
@@ -124,14 +203,13 @@ def run_evaluation(
             citations=result["citations"],
             context_texts=context_texts,
         )
-        scores = {
-            "factual_grounding": _score_factual_grounding(result),
-            "citation_quality": _score_citation_quality(result),
+        scores, grounding = score_result(prompt, result)
+        scores.update({
             "latency": _score_latency(result),
             "cost_per_query": _score_cost(result),
-            "faithfulness_llm": llm_scores.get("faithfulness", 0),
-            "relevance_llm": llm_scores.get("relevance", 0),
-        }
+            "faithfulness_llm": llm_scores.get("faithfulness"),
+            "relevance_llm": llm_scores.get("relevance"),
+        })
         results.append(
             {
                 "question_id": prompt["id"],
@@ -140,6 +218,12 @@ def run_evaluation(
                 "result": result,
                 "scores": scores,
                 "judge": llm_scores,
+                "grounding": grounding,
+                "expected": {
+                    key: prompt[key]
+                    for key in ("answerable", "expected_doc", "expected_pages", "expected_facts")
+                    if key in prompt
+                },
             }
         )
 
@@ -150,13 +234,12 @@ def run_evaluation(
         "generated_at": timestamp,
         "prompt_count": len(results),
         "judge_failures": judge_failures,
+        "scoring_version": SCORING_VERSION,
+        "scoring_notes": SCORING_NOTES,
         "averages": {
-            "factual_grounding": round(sum(item["scores"]["factual_grounding"] for item in results) / len(results), 2),
-            "citation_quality": round(sum(item["scores"]["citation_quality"] for item in results) / len(results), 2),
-            "latency": round(sum(item["scores"]["latency"] for item in results) / len(results), 2),
-            "cost_per_query": round(sum(item["scores"]["cost_per_query"] for item in results) / len(results), 2),
-            "faithfulness_llm": round(sum(item["scores"]["faithfulness_llm"] for item in results) / len(results), 2),
-            "relevance_llm": round(sum(item["scores"]["relevance_llm"] for item in results) / len(results), 2),
+            key: value
+            for key in AVERAGED_SCORES
+            if (value := _average(results, key)) is not None
         },
         "results": results,
     }
@@ -169,14 +252,11 @@ def run_evaluation(
         f"- Prompt count: {len(results)}",
         f"- Judge failures: {judge_failures}",
         "",
+        f"- Scoring version: {SCORING_VERSION}. {SCORING_NOTES}",
+        "",
         "## Average scores",
         "",
-        f"- Factual grounding: {summary['averages']['factual_grounding']}",
-        f"- Citation quality: {summary['averages']['citation_quality']}",
-        f"- Latency: {summary['averages']['latency']}",
-        f"- Cost per query: {summary['averages']['cost_per_query']}",
-        f"- Faithfulness (LLM judge): {summary['averages']['faithfulness_llm']}",
-        f"- Relevance (LLM judge): {summary['averages']['relevance_llm']}",
+        *[f"- {key}: {value}" for key, value in summary["averages"].items()],
         "",
         "## Results",
         "",
@@ -188,6 +268,12 @@ def run_evaluation(
         markdown_lines.append(f"- Judge reasoning: {item['judge'].get('reasoning', 'n/a')}")
         markdown_lines.append(f"- Total seconds: {item['result']['metrics']['total_seconds']}")
         markdown_lines.append(f"- Citations: {len(item['result']['citations'])}")
+        unsupported = [claim["claim"] for claim in item["grounding"]["claims"] if not claim["supported"]]
+        markdown_lines.append(
+            f"- Claims supported by a cited chunk: {item['grounding']['supported_claims']} of {item['grounding']['claim_count']}"
+        )
+        for claim in unsupported[:5]:
+            markdown_lines.append(f"  - unsupported: {claim}")
         markdown_lines.append("")
 
     (config.paths.eval_dir / f"eval_report_{timestamp}.md").write_text(

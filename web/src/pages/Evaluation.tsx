@@ -9,17 +9,29 @@ const metricLabels: Record<string, string> = {
   relevance_llm: "Judge-relevance",
   latency: "Latency",
   cost_per_query: "Cost pressure",
-  factual_grounding: "Citation heuristic",
-  citation_quality: "Citation spread",
+  factual_grounding: "Claim support",
+  citation_quality: "Citation precision",
+  claim_support_rate: "Claims supported",
+  citation_precision: "Citations used",
+  expected_source_hit: "Expected source retrieved",
+  expected_facts_found: "Expected facts in answer",
+  refusal_correct: "Correct answer or refusal",
 };
 
 const metricHelp: Record<string, string> = {
-  faithfulness_llm: "Primary quality signal. Higher means the answer stays inside the retrieved evidence.",
-  relevance_llm: "Primary usefulness signal. Higher means the answer actually addresses the question asked.",
+  faithfulness_llm: "LLM judge score. Higher means the answer stays inside the retrieved evidence.",
+  relevance_llm: "LLM judge score. Higher means the answer actually addresses the question asked.",
   latency: "A coarse speed score, not raw seconds. Higher is faster.",
   cost_per_query: "A coarse efficiency score based on token and API usage. Higher is cheaper.",
-  factual_grounding: "Legacy heuristic that mostly rewards having citations. Useful, but weaker than the LLM judge.",
-  citation_quality: "Rewards answers that draw from multiple distinct sources instead of one document echo chamber.",
+  factual_grounding:
+    "1 to 5 from the share of the answer's claims that a cited chunk supports (content words and every number found in the chunk). Refusals score by whether the question was answerable.",
+  citation_quality:
+    "1 to 5 from the share of cited chunks that support at least one claim; capped at 2 when the expected source was not retrieved.",
+  claim_support_rate: "Share of answer claims supported by a cited chunk (0 to 1).",
+  citation_precision: "Share of cited chunks that support at least one claim (0 to 1).",
+  expected_source_hit: "Share of questions where a cited chunk came from the expected document and page.",
+  expected_facts_found: "Share of the expected key facts that appear in the answer.",
+  refusal_correct: "Share of questions answered when covered and declined when not covered.",
 };
 
 function formatGeneratedAt(value: string) {
