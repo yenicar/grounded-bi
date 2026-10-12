@@ -78,6 +78,11 @@ def score_result(prompt: dict[str, Any], result: dict[str, Any]) -> tuple[dict[s
     grounding = assess_answer(result.get("answer", ""), cited)
     answerable = prompt.get("answerable")
     source_hit = expected_source_hit(cited, prompt.get("expected_doc"), prompt.get("expected_pages"))
+    if source_hit is False:
+        # other pages that state the same answer (also_in) count as the expected source too
+        source_hit = any(
+            expected_source_hit(cited, alt.get("doc"), alt.get("pages")) for alt in prompt.get("also_in", [])
+        )
     facts = expected_facts_found(result.get("answer", ""), prompt.get("expected_facts"))
     scores: dict[str, Any] = {
         "factual_grounding": _score_factual_grounding(grounding, answerable),
@@ -221,7 +226,7 @@ def run_evaluation(
                 "grounding": grounding,
                 "expected": {
                     key: prompt[key]
-                    for key in ("answerable", "expected_doc", "expected_pages", "expected_facts")
+                    for key in ("answerable", "expected_doc", "expected_pages", "expected_facts", "also_in")
                     if key in prompt
                 },
             }

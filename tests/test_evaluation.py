@@ -252,3 +252,46 @@ def test_run_evaluation_writes_report_and_skips_missing_scores(monkeypatch):
         assert "Claims supported by a cited chunk: 1 of 1" in reports[0].read_text(encoding="utf-8")
     finally:
         shutil.rmtree(root, ignore_errors=True)
+
+
+# --- the HR question set and alternate sources ----------------------------------------------
+
+
+def test_also_in_counts_as_the_expected_source():
+    answer = "Eligible employees can take up to 12 workweeks of leave in a 12-month period."
+    prompt = {
+        "id": "q",
+        "answerable": True,
+        "expected_doc": "03_UW_System/UWSystem-1213-FMLA-2026.pdf",
+        "expected_pages": [2],
+        "also_in": [{"doc": "01_Federal/DOL-FMLA-EmployeeGuide-2026.pdf", "pages": [3]}],
+    }
+    scores, _ = score_result(prompt, _result(answer, [FMLA_CHUNK]))
+    assert scores["expected_source_hit"] == 1.0
+    scores, _ = score_result({**prompt, "also_in": []}, _result(answer, [FMLA_CHUNK]))
+    assert scores["expected_source_hit"] == 0.0
+
+
+def test_numbers_with_thousands_separators_match():
+    assert expected_facts_found("You need 1,250 hours of service.", ["1250 hours"]) == 1.0
+
+
+HR_SET = Path(__file__).resolve().parents[1] / "eval" / "hr_policy_questions.json"
+
+
+def test_hr_question_set_is_well_formed():
+    payload = json.loads(HR_SET.read_text(encoding="utf-8"))
+    prompts = payload["prompts"]
+    assert 40 <= len(prompts) <= 50
+    assert len({p["id"] for p in prompts}) == len(prompts)
+    answerable = [p for p in prompts if p["answerable"]]
+    not_covered = [p for p in prompts if not p["answerable"]]
+    assert len(answerable) >= 30 and len(not_covered) >= 8
+    for p in answerable:
+        assert p["question"].strip() and p["expected_doc"].endswith(".pdf")
+        assert p["expected_pages"] and all(isinstance(n, int) and n > 0 for n in p["expected_pages"])
+        assert 1 <= len(p["expected_facts"]) <= 3
+        for alt in p.get("also_in", []):
+            assert alt["doc"].endswith(".pdf") and alt["pages"]
+    for p in not_covered:
+        assert p["expected_doc"] is None and not p["expected_facts"] and p["why_not_covered"].strip()

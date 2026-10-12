@@ -1,0 +1,781 @@
+{
+  "description": "50 HR policy questions for the 65-document HR library: 40 answerable, each with the document and page that answers it and 1 to 3 key facts a correct answer must contain, and 10 the documents do not cover (6 of them near misses whose topic appears but whose detail does not). Every expected fact and evidence excerpt was checked against the extracted page text. also_in lists other pages that state the same answer. Not yet run.",
+  "prompts": [
+    {
+      "id": "hr01",
+      "category": "leave",
+      "question": "What do I need to qualify for FMLA leave - how long must I have worked for my employer, and how many hours?",
+      "answerable": true,
+      "expected_doc": "01_Federal/DOL-FMLA-EmployeeGuide-2026.pdf",
+      "expected_pages": [
+        4
+      ],
+      "expected_facts": [
+        "at least 12 months",
+        "1250 hours",
+        "50 employees within 75 miles"
+      ],
+      "evidence": "Second, you must have worked for the employer for at least 1250 hours in the 12 months before you take leave."
+    },
+    {
+      "id": "hr02",
+      "category": "leave",
+      "question": "How many employees must a private-sector employer have before it is covered by the FMLA?",
+      "answerable": true,
+      "expected_doc": "01_Federal/DOL-FMLA-EmployerGuide-2026.pdf",
+      "expected_pages": [
+        9
+      ],
+      "expected_facts": [
+        "50 or more employees",
+        "20 or more workweeks"
+      ],
+      "evidence": "A private-sector employer is covered by the FMLA if it employs 50 or more employees* in 20 or more workweeks in the current or previous calendar year."
+    },
+    {
+      "id": "hr03",
+      "category": "leave",
+      "question": "Can an employee take FMLA leave to bond with a newborn intermittently, a few days at a time?",
+      "answerable": true,
+      "expected_doc": "01_Federal/DOL_FMLA_Overview_AllEmployees_2026.pdf",
+      "expected_pages": [
+        1
+      ],
+      "expected_facts": [
+        "when the employer and employee agree"
+      ],
+      "evidence": "An employee also may use FMLA leave intermittently or on a reduced leave schedule for bonding with a newborn or newly placed child when the employer and employee agree."
+    },
+    {
+      "id": "hr04",
+      "category": "safety",
+      "question": "How quickly must an employer report a work-related death, or an inpatient hospitalization, to OSHA?",
+      "answerable": true,
+      "expected_doc": "01_Federal/OSHA_Safety_EmployerResponsibilities_AllEmployees_2026.pdf",
+      "expected_pages": [
+        1
+      ],
+      "expected_facts": [
+        "fatalities within 8 hours",
+        "within 24 hours"
+      ],
+      "evidence": "Report to the nearest OSHA office all work-related fatalities within 8 hours, and all work-related inpatient hospitalizations, all amputations and all losses of an eye within 24 hours.",
+      "also_in": [
+        {
+          "doc": "01_Federal/OSHA_Safety_EmployerWorkerRightsHandbook_AllEmployees_2026.pdf",
+          "pages": [
+            6
+          ]
+        },
+        {
+          "doc": "01_Federal/OSHA_Safety_EmployerWorkerRightsHandbook_AllEmployees_2026 (2).pdf",
+          "pages": [
+            18
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hr05",
+      "category": "safety",
+      "question": "When must employers post the yearly summary of workplace injuries and illnesses (OSHA Form 300A)?",
+      "answerable": true,
+      "expected_doc": "01_Federal/OSHA_Safety_EmployerWorkerRightsHandbook_AllEmployees_2026.pdf",
+      "expected_pages": [
+        12
+      ],
+      "expected_facts": [
+        "February 1 through April 30",
+        "Form 300A"
+      ],
+      "evidence": "Each year from February 1 through April 30, employers must post a summary of the injury and illness log from the previous year (OSHA Form 300A)"
+    },
+    {
+      "id": "hr06",
+      "category": "safety",
+      "question": "If my employer retaliates against me for complaining to OSHA, how long do I have to file a whistleblower complaint?",
+      "answerable": true,
+      "expected_doc": "01_Federal/OSHA_Safety_WorkersRights_AllEmployees_2026.pdf",
+      "expected_pages": [
+        1
+      ],
+      "expected_facts": [
+        "within 30 days"
+      ],
+      "evidence": "you can file a whistleblower complaint within 30 days of the retaliation.",
+      "also_in": [
+        {
+          "doc": "01_Federal/OSHA_Safety_EmployerWorkerRightsHandbook_AllEmployees_2026.pdf",
+          "pages": [
+            17
+          ]
+        },
+        {
+          "doc": "01_Federal/OSHA_Safety_EmployerWorkerRightsHandbook_AllEmployees_2026 (2).pdf",
+          "pages": [
+            18
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hr07",
+      "category": "accommodation",
+      "question": "Which employers are covered by Title I (employment) of the Americans with Disabilities Act?",
+      "answerable": true,
+      "expected_doc": "01_Federal/ADA_Law_IntroToADA_AllEmployees_2026.pdf",
+      "expected_pages": [
+        5
+      ],
+      "expected_facts": [
+        "15 or more employees",
+        "labor unions"
+      ],
+      "evidence": "Applies to: employers that have 15 or more employees, including state/local governments, employment agencies, and labor unions.",
+      "also_in": [
+        {
+          "doc": "01_Federal/ADA_Accessibility_DisabilityRightsGuide_AllEmployees_2026.pdf",
+          "pages": [
+            2
+          ]
+        },
+        {
+          "doc": "01_Federal/ADA_Law_ADAOverview_AllEmployees_2026.pdf",
+          "pages": [
+            11
+          ]
+        },
+        {
+          "doc": "01_Federal/EEOC_ADA_EmployerResponsibilities_AllEmployees_2026.pdf",
+          "pages": [
+            2
+          ]
+        },
+        {
+          "doc": "01_Federal/EEOC-ADA-EmploymentRights-Disability-AllEmployees-2026.pdf",
+          "pages": [
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hr08",
+      "category": "accommodation",
+      "question": "How does the ADA statute define a 'direct threat' in employment?",
+      "answerable": true,
+      "expected_doc": "01_Federal/ADA_Law_ADAOverview_AllEmployees_2026.pdf",
+      "expected_pages": [
+        11
+      ],
+      "expected_facts": [
+        "significant risk to the health or safety of others",
+        "cannot be eliminated by reasonable accommodation"
+      ],
+      "evidence": "means a significant risk to the health or safety of others that cannot be eliminated by reasonable accommodation."
+    },
+    {
+      "id": "hr09",
+      "category": "discrimination",
+      "question": "Can an employee go straight to federal court with an ADA Title I employment discrimination claim, and what is the deadline to file with the EEOC?",
+      "answerable": true,
+      "expected_doc": "01_Federal/ADA_Accessibility_DisabilityRightsGuide_AllEmployees_2026.pdf",
+      "expected_pages": [
+        2
+      ],
+      "expected_facts": [
+        "right-to-sue",
+        "180 days",
+        "300 days"
+      ],
+      "evidence": "must be filed with the U. S. Equal Employment Opportunity Commission (EEOC) within 180 days of the date of discrimination, or 300 days if the charge is filed",
+      "also_in": [
+        {
+          "doc": "01_Federal/ADA_Employment_EmploymentSeekingGuide_AllEmployees_2026.pdf",
+          "pages": [
+            4
+          ]
+        },
+        {
+          "doc": "01_Federal/EEOC_ADA_EmployerResponsibilities_AllEmployees_2026.pdf",
+          "pages": [
+            9
+          ]
+        },
+        {
+          "doc": "01_Federal/EEOC-ADA-EmploymentRights-Disability-AllEmployees-2026.pdf",
+          "pages": [
+            6
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hr10",
+      "category": "accommodation",
+      "question": "Does a doctor's note asking for time off because of a disability count as a request for a reasonable accommodation?",
+      "answerable": true,
+      "expected_doc": "01_Federal/ADA_Employment_EmploymentSeekingGuide_AllEmployees_2026.pdf",
+      "expected_pages": [
+        4
+      ],
+      "expected_facts": [
+        "request for a reasonable accommodation"
+      ],
+      "evidence": "A doctor's note requesting time off due to a disability or stating that you can work with certain restrictions is also a request for a reasonable accommodation."
+    },
+    {
+      "id": "hr11",
+      "category": "accommodation",
+      "question": "Does a request for a reasonable accommodation under the ADA have to be made in writing?",
+      "answerable": true,
+      "expected_doc": "01_Federal/EEOC_Accommodation_ReasonableAccommodationUndueHardship_AllEmployees_2026.pdf",
+      "expected_pages": [
+        10
+      ],
+      "expected_facts": [
+        "do not need to be in writing"
+      ],
+      "evidence": "No. Requests for reasonable accommodation do not need to be in writing. Individuals may request accommodations in conversation or may use any other mode of communication."
+    },
+    {
+      "id": "hr12",
+      "category": "accommodation",
+      "question": "If an accommodation would cost the employer too much, what must the employer still consider before refusing it?",
+      "answerable": true,
+      "expected_doc": "01_Federal/EEOC_ADA_EmployerResponsibilities_AllEmployees_2026.pdf",
+      "expected_pages": [
+        7
+      ],
+      "expected_facts": [
+        "vocational rehabilitation agency",
+        "tax credits",
+        "pay for the portion"
+      ],
+      "evidence": "If cost causes the undue hardship, you must also consider whether funding for an accommodation is available from an outside source, such as a vocational rehabilitation agency"
+    },
+    {
+      "id": "hr13",
+      "category": "accommodation",
+      "question": "An employee with a disability has used up all the leave our policy allows. Do we have to consider giving more unpaid leave?",
+      "answerable": true,
+      "expected_doc": "01_Federal/EEOC-Disability-LeaveTeleworkMedicalInquiries-AllEmployees-2026.pdf",
+      "expected_pages": [
+        10
+      ],
+      "expected_facts": [
+        "unpaid leave",
+        "undue hardship",
+        "exhausted the leave"
+      ],
+      "evidence": "an employer must consider providing unpaid leave to an employee with a disability as a reasonable accommodation so long as it does not create an undue hardship for the employer."
+    },
+    {
+      "id": "hr14",
+      "category": "leave",
+      "question": "If a faculty or academic staff member leaves the UW System and is later rehired, is their unused sick leave restored?",
+      "answerable": true,
+      "expected_doc": "02_Wisconsin/Sick Leave.pdf",
+      "expected_pages": [
+        1
+      ],
+      "expected_facts": [
+        "within 3 years"
+      ],
+      "evidence": "unused sick leave shall be terminated but shall be reinstated if the employee is reappointed to any position within the system within 3 years."
+    },
+    {
+      "id": "hr15",
+      "category": "grievance",
+      "question": "After a faculty grievance committee sends its recommendations to the chancellor, how long does the chancellor have to act?",
+      "answerable": true,
+      "expected_doc": "02_Wisconsin/Complaints And Grievances.pdf",
+      "expected_pages": [
+        1
+      ],
+      "expected_facts": [
+        "within 30 days"
+      ],
+      "evidence": "the chancellor shall act on the recommendations within 30 days."
+    },
+    {
+      "id": "hr16",
+      "category": "appointments",
+      "question": "How much notice should someone in a limited (administrative) appointment get when the appointment is terminated?",
+      "answerable": true,
+      "expected_doc": "02_Wisconsin/Limited Appointments.pdf",
+      "expected_pages": [
+        1
+      ],
+      "expected_facts": [
+        "3 months"
+      ],
+      "evidence": "Wherever possible 3 months' notice of termination should be given if the appointee does not hold simultaneously another university appointment."
+    },
+    {
+      "id": "hr17",
+      "category": "appointments",
+      "question": "How far ahead must a probationary faculty member with two or more years of service be told they will not be reappointed, and what happens if the notice is late?",
+      "answerable": true,
+      "expected_doc": "02_Wisconsin/Faculty appointments.pdf",
+      "expected_pages": [
+        3
+      ],
+      "expected_facts": [
+        "at least 12 months",
+        "one-year terminal appointment"
+      ],
+      "evidence": "such notice shall be given at least 12 months before the expiration of the appointment."
+    },
+    {
+      "id": "hr18",
+      "category": "appointments",
+      "question": "What notice must a probationary academic staff member receive if their appointment will not be renewed?",
+      "answerable": true,
+      "expected_doc": "02_Wisconsin/ACADEMIC STAFF APPOINTMENTS.pdf",
+      "expected_pages": [
+        2
+      ],
+      "expected_facts": [
+        "3 months",
+        "6 months",
+        "12 months thereafter"
+      ],
+      "evidence": "At least 3 months before the end of the appointment in the first year; 6 months before the end of the appointment in the second year; and 12 months thereafter."
+    },
+    {
+      "id": "hr19",
+      "category": "layoff",
+      "question": "How much notice of layoff does an academic staff member with an indefinite appointment get when the layoff is for budget or program reasons?",
+      "answerable": true,
+      "expected_doc": "02_Wisconsin/Layoff Of Academic Staff For Reasons Of Budget Or Program.pdf",
+      "expected_pages": [
+        1
+      ],
+      "expected_facts": [
+        "12 months"
+      ],
+      "evidence": "Indefinite appointees shall have 12 months' notice of layoff for reasons of budget or program, unless there are compelling reasons to the contrary."
+    },
+    {
+      "id": "hr20",
+      "category": "layoff",
+      "question": "If a faculty position is eliminated because of a declared financial emergency, how far in advance must the faculty member be notified?",
+      "answerable": true,
+      "expected_doc": "02_Wisconsin/LAYOFF AND TERMINATION FOR REASONS OF FINANCIAL EMERGENCY.pdf",
+      "expected_pages": [
+        2
+      ],
+      "expected_facts": [
+        "at least 12 months",
+        "June 30"
+      ],
+      "evidence": "In either case notification must be given at least 12 months in advance of the effective date."
+    },
+    {
+      "id": "hr21",
+      "category": "discipline",
+      "question": "Who can dismiss a tenured faculty member, and who has the burden of proving just cause?",
+      "answerable": true,
+      "expected_doc": "02_Wisconsin/PROCEDURES FOR FACULTY DISMISSAL.pdf",
+      "expected_pages": [
+        1
+      ],
+      "expected_facts": [
+        "only by the board",
+        "just cause",
+        "on the administration"
+      ],
+      "evidence": "Any faculty member having tenure may be dismissed only by the board and only for just cause and only after due notice and hearing."
+    },
+    {
+      "id": "hr22",
+      "category": "ethics",
+      "question": "Which outside consulting activities must faculty and academic staff report, and by what date each year?",
+      "answerable": true,
+      "expected_doc": "02_Wisconsin/UNCLASSIFIED STAFF CODE OF ETHICS.pdf",
+      "expected_pages": [
+        2
+      ],
+      "expected_facts": [
+        "$5,000 or more",
+        "April 30"
+      ],
+      "evidence": "Each unclassified staff member engaging in outside activities reportable under this section shall annually, on or before April 30, file a report of outside activities"
+    },
+    {
+      "id": "hr23",
+      "category": "pay_and_holidays",
+      "question": "How many personal holiday hours does a full-time eligible UW System employee get each year?",
+      "answerable": true,
+      "expected_doc": "03_UW_System/UWSystem-1211-PersonalHolidayLegalHolidayAdministration-2026.pdf",
+      "expected_pages": [
+        3
+      ],
+      "expected_facts": [
+        "36 hours",
+        "4.5 days"
+      ],
+      "evidence": "Full-time eligible employees are granted 36 hours (4.5 days) of personal holiday hours per year."
+    },
+    {
+      "id": "hr24",
+      "category": "pay_and_holidays",
+      "question": "How much vacation does a full-time faculty or academic staff member on an annual-basis appointment earn per year?",
+      "answerable": true,
+      "expected_doc": "03_UW_System/UWSystem-1210-VacationPaidLeaveBanksCashPayouts-2026.pdf",
+      "expected_pages": [
+        5
+      ],
+      "expected_facts": [
+        "176 hours"
+      ],
+      "evidence": "Full-time faculty, academic staff, and limited appointees in an annual-basis appointment earn 176 hours of vacation per fiscal year."
+    },
+    {
+      "id": "hr25",
+      "category": "leave",
+      "question": "When does a UW employee using sick leave have to provide a note from a health care provider?",
+      "answerable": true,
+      "expected_doc": "03_UW_System/UWSystem-1212-Sick Leave-2026.pdf",
+      "expected_pages": [
+        8
+      ],
+      "expected_facts": [
+        "five consecutive work days",
+        "written certification"
+      ],
+      "evidence": "If sick leave is used for an absence in excess of five consecutive work days, the employee must submit a written certification to the institution from a health care provider"
+    },
+    {
+      "id": "hr26",
+      "category": "leave",
+      "question": "What are the eligibility requirements for Wisconsin FMLA leave for a UW employee?",
+      "answerable": true,
+      "expected_doc": "03_UW_System/UWSystem-1213-FMLA-2026.pdf",
+      "expected_pages": [
+        4
+      ],
+      "expected_facts": [
+        "52 consecutive weeks",
+        "1,000 hours"
+      ],
+      "evidence": "for more than 52 consecutive weeks; and Has worked for any UW System institution or State of Wisconsin agency for at least 1,000 hours"
+    },
+    {
+      "id": "hr27",
+      "category": "leave",
+      "question": "How much paid time off can a sick-leave-eligible UW employee take to vote?",
+      "answerable": true,
+      "expected_doc": "03_UW_System/UWSystem-1216-MiscellaneousLeaveProvisions-2026.pdf",
+      "expected_pages": [
+        4
+      ],
+      "expected_facts": [
+        "three consecutive hours"
+      ],
+      "evidence": "All sick-leave eligible faculty, academic staff, limited appointees, and university staff are entitled to up to three consecutive hours of leave with pay to vote."
+    },
+    {
+      "id": "hr28",
+      "category": "leave",
+      "question": "For how long can a UW staff member be granted an unpaid non-medical leave of absence?",
+      "answerable": true,
+      "expected_doc": "03_UW_System/UWSystem-1217-NonMedicalLeaveOfAbsence-2026.pdf",
+      "expected_pages": [
+        3
+      ],
+      "expected_facts": [
+        "five years"
+      ],
+      "evidence": "may grant an eligible employee a full- or part-time leave of absence without pay for non-medical reasons for a period up to five years."
+    },
+    {
+      "id": "hr29",
+      "category": "remote_work",
+      "question": "How long can a UW System remote work agreement last before it has to be renewed?",
+      "answerable": true,
+      "expected_doc": "03_UW_System/UWSystem-1228-Telecommuting-2026.pdf",
+      "expected_pages": [
+        4
+      ],
+      "expected_facts": [
+        "1 year",
+        "each fiscal year"
+      ],
+      "evidence": "Remote work agreements may not be longer than 1 year in duration and must be updated at the start of each fiscal year"
+    },
+    {
+      "id": "hr30",
+      "category": "safety",
+      "question": "If my job requires prescription safety glasses, will the university reimburse my eye exam, and how often?",
+      "answerable": true,
+      "expected_doc": "03_UW_System/UWSystem-1230-WorkplaceSafety-2026.pdf",
+      "expected_pages": [
+        4
+      ],
+      "expected_facts": [
+        "one per fiscal year"
+      ],
+      "evidence": "Reimbursement for eye examinations under this provision shall not exceed one per fiscal year."
+    },
+    {
+      "id": "hr31",
+      "category": "grievance",
+      "question": "What is the deadline for a university staff member to file a Step One grievance, and how soon is a written decision due after the meeting?",
+      "answerable": true,
+      "expected_doc": "03_UW_System/UWSystem-1233-GrievanceProcedures-2026.pdf",
+      "expected_pages": [
+        5
+      ],
+      "expected_facts": [
+        "30 calendar days",
+        "seven (7) calendar days"
+      ],
+      "evidence": "Grievances shall be filed with the employee's department head, director, dean, or equivalent administrator no later than 30 calendar days from the date the grievant first became aware"
+    },
+    {
+      "id": "hr32",
+      "category": "leave",
+      "question": "If my campus stays open during a snowstorm but I cannot make it to work, how is my absence covered?",
+      "answerable": true,
+      "expected_doc": "03_UW_System/UWSystem-1235-InclementWeatherEmergencyConditions-2026.pdf",
+      "expected_pages": [
+        3
+      ],
+      "expected_facts": [
+        "accrued compensatory time",
+        "leave without pay"
+      ],
+      "evidence": "Employees absent from work because of inclement weather or emergency conditions must use available vacation, accrued compensatory time, available holidays, or leave without pay to cover the absence"
+    },
+    {
+      "id": "hr33",
+      "category": "student_employment",
+      "question": "How many hours per week can a student worker work during the academic year?",
+      "answerable": true,
+      "expected_doc": "03_UW_System/UWSystem-1237-StudentEmployment-2026.pdf",
+      "expected_pages": [
+        3
+      ],
+      "expected_facts": [
+        "25 hours per week"
+      ],
+      "evidence": "student workers may work up to a maximum of 25 hours per week during the Academic Year"
+    },
+    {
+      "id": "hr34",
+      "category": "records",
+      "question": "Should FMLA approval letters and medical certifications be kept in an employee's personnel file?",
+      "answerable": true,
+      "expected_doc": "03_UW_System/UWSystem-1261-PersonnelFiles-2026.pdf",
+      "expected_pages": [
+        4,
+        5
+      ],
+      "expected_facts": [
+        "separate files",
+        "FMLA/WFMLA approval letters"
+      ],
+      "evidence": "The following records are examples of records that should be maintained in secure, confidential, and separate files outside of the personnel or supervisor's working file"
+    },
+    {
+      "id": "hr35",
+      "category": "recruitment",
+      "question": "How many references must be checked before making a hire for a UW System position?",
+      "answerable": true,
+      "expected_doc": "03_UW_System/UWSystem-1275-RecruitmentPolicies-2026.pdf",
+      "expected_pages": [
+        4
+      ],
+      "expected_facts": [
+        "three professional references",
+        "prior supervisor"
+      ],
+      "evidence": "Reference checks must be conducted at a minimum with three professional references, at least one of which must be a prior supervisor."
+    },
+    {
+      "id": "hr36",
+      "category": "conduct",
+      "question": "Where can an employee report workplace bullying if the chancellor is the person allegedly doing the bullying?",
+      "answerable": true,
+      "expected_doc": "03_UW_System/UWSystem-1294-WorkplaceBullying-2026.pdf",
+      "expected_pages": [
+        3
+      ],
+      "expected_facts": [
+        "UW System Integrity Hotline"
+      ],
+      "evidence": "If the local Chancellor is alleged to be engaging in the bullying conduct, a complaint may be made to the UW System Integrity Hotline"
+    },
+    {
+      "id": "hr37",
+      "category": "recruitment",
+      "question": "Can a disabled veteran be appointed to a UW position without a competitive recruitment?",
+      "answerable": true,
+      "expected_doc": "03_UW_System/UWSystem-1203-EmploymentOfVeterans-2026.pdf",
+      "expected_pages": [
+        5
+      ],
+      "expected_facts": [
+        "30% or more service-connected disability rating"
+      ],
+      "evidence": "A disabled veteran with a 30% or more service-connected disability rating may be appointed without a recruitment."
+    },
+    {
+      "id": "hr38",
+      "category": "remote_work",
+      "question": "At UW-Oshkosh, can an employee on a 3/2 hybrid schedule take both Monday and Friday as remote days?",
+      "answerable": true,
+      "expected_doc": "04_UWO_HR/UWO-HR-RemoteWork-2026.pdf",
+      "expected_pages": [
+        3
+      ],
+      "expected_facts": [
+        "Monday OR Friday",
+        "not both"
+      ],
+      "evidence": "Employees on a 3/2 schedule may choose Monday OR Friday as a remote day, but not both."
+    },
+    {
+      "id": "hr39",
+      "category": "remote_work",
+      "question": "At UW-Oshkosh, when can an assigned fully remote worker be reimbursed for travel to campus?",
+      "answerable": true,
+      "expected_doc": "04_UWO_HR/UWO-HR-RemoteWork-2026.pdf",
+      "expected_pages": [
+        7
+      ],
+      "expected_facts": [
+        "approved by the supervisor",
+        "85 miles"
+      ],
+      "evidence": "Travel to the position's assigned university location may be reimbursed if approved by the supervisor and if the distance exceeds 85 miles."
+    },
+    {
+      "id": "hr40",
+      "category": "schedules",
+      "question": "How does the UW-Oshkosh summer flex schedule work for full-time employees?",
+      "answerable": true,
+      "expected_doc": "04_UWO_HR/UWO-HR-PoliciesProcedures-2026.pdf",
+      "expected_pages": [
+        3
+      ],
+      "expected_facts": [
+        "noon on Fridays",
+        "40-hour workweek"
+      ],
+      "evidence": "Full-time employees will have the option to work until noon on Fridays. Full-time employees must still work a 40-hour workweek or use leave to make up the difference."
+    },
+    {
+      "id": "hr41",
+      "category": "not_covered",
+      "question": "What percentage of salary does a typical private employer match in a 401(k) retirement plan?",
+      "answerable": false,
+      "expected_doc": null,
+      "expected_pages": [],
+      "expected_facts": [],
+      "evidence": null,
+      "why_not_covered": "Searched for '401(k)', '401k', 'match', 'matching contribution' and 'employer match' with no hits; retirement is mentioned only as Wisconsin Retirement System eligibility and a passing reference to a 403(b) supplemental program."
+    },
+    {
+      "id": "hr42",
+      "category": "not_covered",
+      "question": "How many weeks of Paid Parental Leave do UW System employees get, and at what rate of pay?",
+      "answerable": false,
+      "expected_doc": null,
+      "expected_pages": [],
+      "expected_facts": [],
+      "evidence": null,
+      "why_not_covered": "Near miss: the UW sick leave policy says Paid Parental Leave must be used before sick leave, but no document states its length, eligibility or pay rate."
+    },
+    {
+      "id": "hr43",
+      "category": "not_covered",
+      "question": "How much job-protected leave does the California Family Rights Act provide?",
+      "answerable": false,
+      "expected_doc": null,
+      "expected_pages": [],
+      "expected_facts": [],
+      "evidence": null,
+      "why_not_covered": "Searched 'Family Rights Act' (no hits) and 'California' (only listed among OSHA state plans); no document covers California leave law."
+    },
+    {
+      "id": "hr44",
+      "category": "not_covered",
+      "question": "What is the current minimum salary, in dollars per week, an employee must earn to qualify for the FLSA white-collar overtime exemption?",
+      "answerable": false,
+      "expected_doc": null,
+      "expected_pages": [],
+      "expected_facts": [],
+      "evidence": null,
+      "why_not_covered": "Near miss: the FLSA designation policy says an exempt employee must have 'a salary above a certain dollar threshold' but never gives the figure; searches for '$684', '$844', 'salary level' and 'per week' found nothing."
+    },
+    {
+      "id": "hr45",
+      "category": "not_covered",
+      "question": "What is the mileage reimbursement rate per mile for UW employees who drive a personal vehicle on university business?",
+      "answerable": false,
+      "expected_doc": null,
+      "expected_pages": [],
+      "expected_facts": [],
+      "evidence": null,
+      "why_not_covered": "Near miss: the telecommuting policies discuss when travel to the office is reimbursable, but searches for 'mileage', 'per mile', 'cents', 'reimbursement rate' and 'per diem' found no rates."
+    },
+    {
+      "id": "hr46",
+      "category": "not_covered",
+      "question": "How much tuition reimbursement can a UW employee receive per year?",
+      "answerable": false,
+      "expected_doc": null,
+      "expected_pages": [],
+      "expected_facts": [],
+      "evidence": null,
+      "why_not_covered": "Near miss: 'tuition reimbursement requests' appear only in the personnel files policy as records to keep outside the file; no document gives amounts or eligibility."
+    },
+    {
+      "id": "hr47",
+      "category": "not_covered",
+      "question": "What is Wisconsin's state minimum wage per hour?",
+      "answerable": false,
+      "expected_doc": null,
+      "expected_pages": [],
+      "expected_facts": [],
+      "evidence": null,
+      "why_not_covered": "'Minimum wage' appears only in general descriptions of the FLSA; searches for '$7.25', 'per hour' and 'hourly rate' found no Wisconsin wage figure."
+    },
+    {
+      "id": "hr48",
+      "category": "not_covered",
+      "question": "How many weeks of benefits does New York's Paid Family Leave program provide?",
+      "answerable": false,
+      "expected_doc": null,
+      "expected_pages": [],
+      "expected_facts": [],
+      "evidence": null,
+      "why_not_covered": "Searched 'Paid Family Leave' and 'paid family' with no hits; New York appears only in OSHA state-plan and office listings and one FMLA worksite example."
+    },
+    {
+      "id": "hr49",
+      "category": "not_covered",
+      "question": "Under federal law, how much break time must an employer give a nursing employee to pump breast milk, and must it be paid?",
+      "answerable": false,
+      "expected_doc": null,
+      "expected_pages": [],
+      "expected_facts": [],
+      "evidence": null,
+      "why_not_covered": "Near miss: the DOL FMLA pages only list link titles such as 'Break Time for Nursing Mothers' and 'FLSA protections to pump at work'; no substantive text on lactation breaks ('lactation', 'pump', 'break time') exists."
+    },
+    {
+      "id": "hr50",
+      "category": "not_covered",
+      "question": "How much does a UW employee pay each month toward State Group Health Insurance premiums?",
+      "answerable": false,
+      "expected_doc": null,
+      "expected_pages": [],
+      "expected_facts": [],
+      "evidence": null,
+      "why_not_covered": "Near miss: the UW FMLA policy says employees on leave must keep paying the employee contribution, and the sick leave policy mentions converting sick leave for State Group Health Insurance, but no premium amounts appear anywhere."
+    }
+  ]
+}

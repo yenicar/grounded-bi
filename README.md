@@ -90,7 +90,7 @@ python -m pytest -q
 
 - **Auth.** Local dev sign-in is on unless `TRBI_DEV_AUTH_ENABLED=0`, and the session cookie is signed with a placeholder secret unless `TRBI_AUTH_SECRET` is set. Google and GitHub sign-in are wired but need your own OAuth client.
 - **No OCR.** Scanned PDFs with no text layer come through as empty pages and are skipped at indexing.
-- **Eval on the HR library.** The eval needs questions that HR staff actually ask, run against these documents.
+- **Eval on the HR library.** `eval/hr_policy_questions.json` holds 50 questions for the HR documents: 40 with the document, page and key facts that answer them, and 10 the documents do not cover, 6 of them near misses. The facts were checked against the extracted page text, but the set has not been run yet; `bi-rag eval --prompts eval/hr_policy_questions.json` runs it, at about two to three Gemini calls per question. The questions were written from the documents, not by HR staff.
 - **Grounding pass off by default** until its latency is acceptable.
 - **No streaming.** Answers arrive whole; the CLI has no progress bar during indexing.
 
