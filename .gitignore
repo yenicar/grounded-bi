@@ -1,0 +1,33 @@
+# secrets and local env
+.secrets/
+.env
+.env.*
+*.pem
+*.key
+
+# data: documents, chunks, indexes, caches, eval reports (only the README is tracked)
+data/*
+!data/README.md
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+build/
+
+# test scratch folders
+.tmp_*/
+
+# web
+node_modules/
+dist/
+*.tsbuildinfo
+web/vite.config.js
+web/vite.config.d.ts
+
+# misc
+*.log
+.DS_Store

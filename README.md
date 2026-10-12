@@ -1,0 +1,99 @@
+# Grounded BI
+
+Grounded BI answers HR policy questions from a folder of policy documents. Every answer cites the document and page it came from, ends with a confidence level, and says so plainly when the documents do not cover the question.
+
+I built it against 65 public HR policy documents (677 pages, indexed into 1,214 chunks) from four levels: federal agencies, Wisconsin administrative code, the UW System, and UW Oshkosh HR. Those PDFs are not in this repo; [data/README.md](data/README.md) shows how to point it at your own.
+
+**Status:** a local, single-workstation build. It has not been deployed, and no one outside the project has used it. The open items below come before any shared use.
+
+## What an answer looks like
+
+- Asked to compare federal and UW System guidance on FMLA and sick leave, it answered at Medium confidence with four page-level citations across both levels, listed what the evidence did not show, and took about 30 seconds the first time. A repeat of the same question comes from the answer cache with no model calls.
+- Asked about pet insurance, which none of the documents cover, it answered with Low confidence and said the documents do not address it.
+
+## How it works
+
+```mermaid
+flowchart TD
+    D[Policy files<br/>PDF, DOCX, XLSX, CSV] --> I[Ingest<br/>Markdown per page, tables kept as tables]
+    I --> C[Chunk<br/>parent sections ~800 tokens<br/>child chunks ~220 tokens]
+    C --> E[Gemini embeddings<br/>ChromaDB]
+    C --> K[BM25 keyword index<br/>and term graph]
+    Q[Question] --> R{Answer cache<br/>question + pipeline + corpus fingerprint}
+    R -->|hit| A
+    R -->|miss| S[Search child chunks three ways<br/>embeddings, BM25, term graph]
+    E --> S
+    K --> S
+    S --> F[Reciprocal rank fusion<br/>collapse to parent sections<br/>per-document cap]
+    F -->|nothing retrieved| N[Fixed reply: not enough grounded evidence]
+    F -->|top sections| G[Gemini answer<br/>context only, cite pages, end with confidence]
+    G -.->|optional| V[Grounding pass<br/>trims claims the context does not support]
+    G --> A[Answer with citations and confidence]
+    V --> A
+```
+
+**Retrieval.** Each question is searched three ways over the small child chunks: Gemini embeddings in ChromaDB, BM25 keyword scoring, and a term co-occurrence graph built at index time. The rankings are merged with reciprocal rank fusion, so an exact policy number found by keywords is not lost to a looser paraphrase match from embeddings. Hits are then collapsed to their larger parent section, so the model reads the full context around each passage, and a per-document cap keeps one long policy from filling the prompt. Follow-up questions in chat are rewritten into standalone questions before they are searched.
+
+**Answer and refusal.** If retrieval finds nothing, the reply is a fixed sentence saying there is not enough grounded evidence, and no answer is generated. Otherwise the prompt tells Gemini to use only the retrieved context, say plainly when it is insufficient, never mention a source that was not provided, and end with `Confidence: High|Medium|Low`. Citations are built from the retrieved chunks' document names and page numbers, not from the model's text. An optional grounding pass sends the draft back with its context and removes claims the context does not support. It is off by default because it adds a second model call (5 to 23 seconds per question in my HR runs); turn it on with `TRBI_ANSWER_GROUNDING_ENABLED=1`.
+
+**Cache.** Every stage is cached by content hash: extraction, chunks, embeddings and answers. The answer cache key includes the question, a fingerprint of the pipeline settings (models, chunk sizes, retrieval settings, version string) and a fingerprint of the corpus, so changing any of them invalidates old answers.
+
+**Evaluation.** `bi-rag eval` runs a JSON file of questions through the full pipeline and scores each answer. Two scores are heuristics: factual grounding (5 when the answer has citations) and citation quality (5 when citations span two or more documents), so they cannot catch a wrong answer. Two come from an LLM judge, a separate prompt to the same Gemini model that rates faithfulness to the retrieved context and relevance to the question, 1 to 5. Latency and cost are scored from the run's timings and token counts.
+
+## Evaluation results
+
+The only recorded eval runs were made before the switch to HR documents, on 16 questions over a fictional company's business documents. There is no eval run on the HR library yet.
+
+| Run (22 Apr 2026, UTC) | Faithfulness (LLM judge) | Relevance (LLM judge) | What the report shows |
+|---|---|---|---|
+| 14:22 | 0.81 | 2.19 | 9 of 16 judge replies failed to parse and were scored 0 |
+| 15:50 | 2.12 | 5.0 | no judge parse failures; all 16 answers served from the answer cache |
+| 16:08 | 1.94 | 5.0 | all 16 answers again served from the cache |
+| 16:19 | 3.31 | 5.0 | fresh answers with the grounding pass on: 14 kept as grounded, 2 trimmed |
+
+Factual grounding (4.81) and citation quality (5.0) scored the same in all four runs, while the judge found unsupported details in most answers. In the last run one answer still named four competitors that appear nowhere in its sources. The second and third runs re-scored cached answers from an earlier pipeline version, so the drop from 2.12 to 1.94 is judge variation on the same answers, not a change in the system. Each figure is one run, judged by the same Gemini model that wrote the answers.
+
+The reports themselves are not in this repo because they quote the earlier documents at length.
+
+## Run it
+
+Prerequisites: Python 3.12+, Node.js 18+, and a Gemini API key in `GEMINI_API_KEY`.
+
+```powershell
+python -m pip install -e ".[dev,api,formats,auth,export]"
+
+# put documents in data/raw_pdfs/ (see data/README.md), then:
+bi-rag index --verbose
+bi-rag ask "How much FMLA leave can an employee take?" --debug
+```
+
+For the web app (FastAPI on port 8000, React on port 5173), see [RUNNING_THE_APP.md](RUNNING_THE_APP.md).
+
+Tests run offline with no API key:
+
+```powershell
+python -m pytest -q
+```
+
+## Repo map
+
+| Path | What it holds |
+|---|---|
+| `src/true_rag_bi/` | ingestion, chunking, indexing, retrieval, evaluation, CLI (`bi-rag`) |
+| `api/` | FastAPI app: query, corpora, documents, search, eval, export and auth routers |
+| `web/` | React and Vite front end: Ask, Chat, Library and Evaluation pages |
+| `tests/` | pytest suite (70 tests) |
+| `SYSTEM_OVERVIEW.md` | longer description of the pipeline |
+| `ARCHITECTURE_DECISIONS.md` | an AI-written code review and the status of each finding |
+
+## Open items
+
+- **Auth.** Local dev sign-in is on unless `TRBI_DEV_AUTH_ENABLED=0`, and the session cookie is signed with a placeholder secret unless `TRBI_AUTH_SECRET` is set. Google and GitHub sign-in are wired but need your own OAuth client.
+- **No OCR.** Scanned PDFs with no text layer come through as empty pages and are skipped at indexing.
+- **Eval on the HR library.** The eval needs questions that HR staff actually ask, run against these documents.
+- **Grounding pass off by default** until its latency is acceptable.
+- **No streaming.** Answers arrive whole; the CLI has no progress bar during indexing.
+
+## Stack
+
+Python 3.12, Gemini (`google-generativeai`) for embeddings, answers and judging, ChromaDB, pdfplumber, PyPDF2 and pdfminer.six, tiktoken, FastAPI, React 18, Vite, TypeScript.
