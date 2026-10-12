@@ -42,7 +42,20 @@ flowchart TD
 
 ## Evaluation results
 
-The only recorded eval runs were made before the switch to HR documents, on 16 questions over a fictional company's business documents. There is no eval run on the HR library yet.
+### HR library
+
+The 50-question HR set was first run on 12 Oct 2026, with `gemini-2.5-flash` writing, grounding and judging the answers on the Gemini API free tier. The report is [eval/reports/hr_eval_20261012.md](eval/reports/hr_eval_20261012.md). With the grounding pass on:
+
+- the expected page was among the cited chunks for 36 of the 40 covered questions;
+- 33 of the 40 covered questions were answered and all 10 uncovered ones were declined;
+- 99 of the 102 claims in the answers were supported by a cited chunk under the lexical check above;
+- all expected facts appeared in 24 of the 40 answers. That is a lower bound, because the fact check does not credit paraphrases ("labor organizations" for "labor unions").
+
+The grounding pass also removed a correct fact once, turning an answer into a decline. A run with the grounding pass off stopped after 44 questions, when the API began refusing the project (403). All 40 covered questions finished in both runs: off, 35 of 40 were answered and 102 of 109 claims were supported. Each figure is from one run, judged by the same model that answered, and the questions were written from the documents, not by HR staff.
+
+### Earlier business-document runs
+
+These runs were made before the switch to HR documents, on 16 questions over a fictional company's business documents.
 
 | Run (22 Apr 2026, UTC) | Faithfulness (LLM judge) | Relevance (LLM judge) | What the report shows |
 |---|---|---|---|
@@ -90,7 +103,7 @@ python -m pytest -q
 
 - **Auth.** Local dev sign-in is on unless `TRBI_DEV_AUTH_ENABLED=0`, and the session cookie is signed with a placeholder secret unless `TRBI_AUTH_SECRET` is set. Google and GitHub sign-in are wired but need your own OAuth client.
 - **No OCR.** Scanned PDFs with no text layer come through as empty pages and are skipped at indexing.
-- **Eval on the HR library.** `eval/hr_policy_questions.json` holds 50 questions for the HR documents: 40 with the document, page and key facts that answer them, and 10 the documents do not cover, 6 of them near misses. The facts were checked against the extracted page text, but the set has not been run yet; `bi-rag eval --prompts eval/hr_policy_questions.json` runs it, at about two to three Gemini calls per question. The questions were written from the documents, not by HR staff.
+- **Eval on the HR library.** `eval/hr_policy_questions.json` holds 50 questions for the HR documents: 40 with the document, page and key facts that answer them, and 10 the documents do not cover, 6 of them near misses. The facts were checked against the extracted page text. It has one run so far (see Evaluation results); `bi-rag eval --prompts eval/hr_policy_questions.json` runs it, at about two to three Gemini calls per question. On the free tier the calls need pacing, and that run's pacing harness is not in this repo. The questions were written from the documents, not by HR staff.
 - **Grounding pass off by default** until its latency is acceptable.
 - **No streaming.** Answers arrive whole; the CLI has no progress bar during indexing.
 

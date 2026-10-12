@@ -1,5 +1,5 @@
 {
-  "description": "50 HR policy questions for the 65-document HR library: 40 answerable, each with the document and page that answers it and 1 to 3 key facts a correct answer must contain, and 10 the documents do not cover (6 of them near misses whose topic appears but whose detail does not). Every expected fact and evidence excerpt was checked against the extracted page text. also_in lists other pages that state the same answer. Not yet run.",
+  "description": "50 HR policy questions for the 65-document HR library: 40 answerable, each with the document and page that answers it and 1 to 3 key facts a correct answer must contain, and 10 the documents do not cover (6 of them near misses whose topic appears but whose detail does not). Every expected fact and evidence excerpt was checked against the extracted page text. also_in lists other pages that state the same answer. First run on 12 Oct 2026: eval/reports/hr_eval_20261012.md.",
   "prompts": [
     {
       "id": "hr01",
