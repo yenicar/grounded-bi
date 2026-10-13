@@ -1,5 +1,7 @@
 # Grounded BI
 
+**Case study:** [sanaullahjannisar.com/work/grounded-bi](https://sanaullahjannisar.com/work/grounded-bi/), with the story, results and architecture. Built by [Sanaullah Jannisar](https://sanaullahjannisar.com), AI engineer.
+
 Grounded BI answers HR policy questions from a folder of policy documents. Every answer cites the document and page it came from, ends with a confidence level, and says so plainly when the documents do not cover the question.
 
 I built it against 65 public HR policy documents (677 pages, indexed into 1,214 chunks) from four levels: federal agencies, Wisconsin administrative code, the UW System, and UW Oshkosh HR. Those PDFs are not in this repo; [data/README.md](data/README.md) shows how to point it at your own.
